@@ -2,11 +2,10 @@ import { useState, useRef } from 'react'
 import Row from '../rows'
 
 // eslint-disable-next-line react/prop-types
-const Column = ({position, amountRows, curPlayer, updatePlayerTurn, checkWinner, updateTotalAmountTokensPlaced}) => {
+const Column = ({position, amountRows, curPlayer, updatePlayerTurn, checkWinner, updateTotalAmountTokensPlaced, playerAttribute}) => {
     const columnRef = useRef(undefined)
     const [rowPos, setRowPos] = useState(amountRows - 1)
 
-    const PLAYER_ATTRIBUTE = 'data-player-id'
     const rows = Array(amountRows).fill(null)
 
     const putTokenOnBoard = () => {
@@ -18,7 +17,7 @@ const Column = ({position, amountRows, curPlayer, updatePlayerTurn, checkWinner,
         lastChild.classList.add(`${curPlayer.color}`)
 
         // eslint-disable-next-line react/prop-types
-        lastChild.setAttribute(`${PLAYER_ATTRIBUTE}`, curPlayer.id)
+        lastChild.setAttribute(`${playerAttribute}`, curPlayer.id)
         
         updateTotalAmountTokensPlaced()
     }

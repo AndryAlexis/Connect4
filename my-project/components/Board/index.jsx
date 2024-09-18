@@ -2,7 +2,9 @@ import { useRef, useState } from 'react'
 import Column from './columns'
 
 // eslint-disable-next-line react/prop-types
-const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlayerTurn, matchesForWin}) => {
+const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlayerTurn, matchesToWin}) => {
+    const PLAYER_ATTRIBUTE = 'data-player-id'
+
     const boardRef = useRef(undefined)
     const [totalAmountOfTokensPlaced, setTotalAmountTokensPlaced] = useState(0)
 
@@ -13,25 +15,64 @@ const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlaye
     const checkWinner = (clickedColumnPos, lastSelectedRowPos) => {
         const columns = boardRef.current.lastElementChild.children
         const clickedColumn = columns[clickedColumnPos]
-        const amountOfTokensPlacedInColumn = amountRows - lastSelectedRowPos
-        const minTokensToWin = amountPlayers * matchesForWin - 2
+        const minTokensToWin = amountPlayers * matchesToWin - 2
 
-        console.log(`Amount tokens placed: ${totalAmountOfTokensPlaced}`)
+        // console.log(`Amount tokens placed: ${totalAmountOfTokensPlaced}`)
 
-        if (totalAmountOfTokensPlaced < minTokensToWin && amountOfTokensPlacedInColumn < matchesForWin)
+        // It must be a minimum number of tokens to check if a winner exists.
+        const thereAreNotMinOfTokensToWin = totalAmountOfTokensPlaced < minTokensToWin
+
+        if (thereAreNotMinOfTokensToWin)
             return
         
         const rowsOfClickedColumn = clickedColumn.children
-        const lastPlayerWhoPutToken = rowsOfClickedColumn[lastSelectedRowPos].getAttribute('data-player-id')
+        const lastPlayerWhoPutToken = rowsOfClickedColumn[lastSelectedRowPos].getAttribute(PLAYER_ATTRIBUTE)
 
         checkAmountOfMatches(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken)
 
-        console.log('vamooosss')
+        console.log('Someone could win')
     }
 
-    const checkAmountOfMatches = (columns, clickedColumnPos, lastSelectedRowPos) => {
-        //Check clicked column
-        console.log(columns[clickedColumnPos])
+    const checkAmountOfMatches = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) => {
+        const thereAreNotEnoughtTokensOnLeft = clickedColumnPos < matchesToWin - 1
+
+        if (thereAreNotEnoughtTokensOnLeft)
+            return
+
+        const tokensWhichMatched = findLineOfTokens(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken)
+
+        console.log(tokensWhichMatched)
+    }
+
+    const findLineOfTokens = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) => {
+        let line = undefined
+
+        line = checkLeftHorizontally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken)
+
+        return line
+    }
+
+    const checkLeftHorizontally = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) => {
+        let column = undefined
+        let row = undefined
+        let player = undefined
+        let elementsThatMatched = []
+
+        //Check the left horizontally
+        for (let i = clickedColumnPos; i >= 0; i--) {
+            column = columns[i]
+            row = column.children[lastSelectedRowPos]
+            
+            player = row.getAttribute(PLAYER_ATTRIBUTE)
+
+            if (player === lastPlayerWhoPutToken) {
+                elementsThatMatched.push(row)
+            } else {
+                return []
+            }
+        }
+
+        return elementsThatMatched
     }
 
     return <article 
@@ -39,7 +80,7 @@ const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlaye
         ref={boardRef}
     >
         <h1 className='text-4xl p-2'>
-            Connect {matchesForWin}
+            Connect {matchesToWin}
         </h1>
         <div
             className='border-2 grid'     
@@ -55,6 +96,7 @@ const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlaye
                         updatePlayerTurn={updatePlayerTurn}
                         checkWinner={checkWinner}
                         updateTotalAmountTokensPlaced={updateTotalAmountTokensPlaced}
+                        playerAttribute={PLAYER_ATTRIBUTE}
                     />)
                 )
             }

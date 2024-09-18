@@ -6,7 +6,7 @@ import PlayerIndicator from "../components/PlayerIndicator"
 const App = () => {
   const COLUMNS = 9
   const ROWS = 7
-  const MATCHES_FOR_WIN = 4
+  const MATCHES_TO_WIN = 4
 
   const players = [
     {
@@ -45,7 +45,7 @@ const App = () => {
       curPlayer={curPlayer}
       amountPlayers={players.length}
       updatePlayerTurn={updatePlayerTurn}
-      matchesForWin={MATCHES_FOR_WIN}
+      matchesToWin={MATCHES_TO_WIN}
     />
     <div className="absolute right-4 top-4 grid gap-2">
       {
