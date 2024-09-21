@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import Column from './columns'
 
+import BoardLine from './BoardLine.jsx'
+
 // eslint-disable-next-line react/prop-types
 const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlayerTurn, matchesToWin}) => {
     const PLAYER_ATTRIBUTE = 'data-player-id'
@@ -17,8 +19,6 @@ const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlaye
         const clickedColumn = columns[clickedColumnPos]
         const minTokensToWin = amountPlayers * matchesToWin - 2
 
-        // console.log(`Amount tokens placed: ${totalAmountOfTokensPlaced}`)
-
         // It must be a minimum number of tokens to check if a winner exists.
         const thereAreNotMinOfTokensToWin = totalAmountOfTokensPlaced < minTokensToWin
 
@@ -28,127 +28,17 @@ const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlaye
         const rowsOfClickedColumn = clickedColumn.children
         const lastPlayerWhoPutToken = rowsOfClickedColumn[lastSelectedRowPos].getAttribute(PLAYER_ATTRIBUTE)
 
-        checkAmountOfMatches(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
-
-        // console.log('Someone could win')
-    }
-
-    const checkAmountOfMatches = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows) => {
-        const thereAreNotEnoughtTokensOnLeft = clickedColumnPos < matchesToWin - 1
-        const thereAreNotEnoughtTokensOnBottom = amountRows - lastSelectedRowPos < matchesToWin
-        const thereAreNotEnoughtTokensOnRight = columns.length - clickedColumnPos > matchesToWin - 1
+        const boardLine = new BoardLine(PLAYER_ATTRIBUTE, matchesToWin)
         
-        if (thereAreNotEnoughtTokensOnRight) {
-            console.log('RIGHT')
-        }
-
-        // if (!thereAreNotEnoughtTokensOnLeft) {
-        //     console.log('LEFT YEAH')
-        // }
-        // if (!thereAreNotEnoughtTokensOnBottom) {
-        //     console.log('BOTTOM YEAH')
-        // }
-
-        // if (thereAreNotEnoughtTokensOnLeft || thereAreNotEnoughtTokensOnBottom) {
-        //     return
-        // }
-    
-
-        const tokensWhichMatched = findLineOfTokens(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
+        const tokensWhichMatched = boardLine.checkForNumberOfMatches(
+            columns,
+            clickedColumnPos,
+            lastSelectedRowPos,
+            lastPlayerWhoPutToken,
+            amountRows
+        )
 
         console.log(tokensWhichMatched)
-    }
-
-    const findLineOfTokens = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows) => {
-        let line = undefined
-
-        // line = checkLeftHorizontally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken)
-        // line = checkLeftDiagonally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
-        line = checkRightHorizontally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
-
-
-        return line
-    }
-
-    const checkLeftHorizontally = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) => {
-        let column = undefined
-        let row = undefined
-        let player = undefined
-        let elementsThatMatched = []
-
-        //Check the left horizontally
-        for (let i = clickedColumnPos; i >= 0; i--) {
-            column = columns[i]
-            row = column.children[lastSelectedRowPos]
-            
-            player = row.getAttribute(PLAYER_ATTRIBUTE)
-
-            if (player === lastPlayerWhoPutToken) {
-                elementsThatMatched.push(row)
-            } else {
-                return []
-            }
-        }
-
-        return elementsThatMatched
-    }
-
-    const checkLeftDiagonally = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows) => {
-        let column = undefined
-        let row = undefined
-        let player = undefined
-        let elementsThatMatched = []
-        let diagonalPos = lastSelectedRowPos
-
-        //Check the left horizontally
-        for (let i = clickedColumnPos; i >= 0; i--) {
-            column = columns[i]
-            row = column.children[diagonalPos]
-
-            console.log(row)
-            console.log(columns[0].children.length)
-            
-            player = row.getAttribute(PLAYER_ATTRIBUTE)
-
-            if (player === lastPlayerWhoPutToken) {
-                elementsThatMatched.push(row)
-            } else {
-                return []
-            }
-
-            diagonalPos++
-
-            if (diagonalPos >= amountRows) {
-                return elementsThatMatched
-            }
-        }
-
-        return elementsThatMatched
-    }
-
-    const checkRightHorizontally = (columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) => {
-        let column = undefined
-        let row = undefined
-        let player = undefined
-        let elementsThatMatched = []
-
-        //Check the left horizontally
-        for (let i = clickedColumnPos; i < columns.length; i++) {
-            column = columns[i]
-            row = column.children[lastSelectedRowPos]
-            
-            player = row.getAttribute(PLAYER_ATTRIBUTE)
-
-            if (player === lastPlayerWhoPutToken) {
-                elementsThatMatched.push(row)
-            }
-
-            if (elementsThatMatched.length >= matchesToWin) {
-                return elementsThatMatched
-            }
-        }
-
-        return elementsThatMatched
     }
 
     return <article 
