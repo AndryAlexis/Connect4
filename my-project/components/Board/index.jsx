@@ -1,25 +1,35 @@
 import { useRef, useState } from 'react'
+import PropTypes from 'prop-types' // Importing PropTypes for validation
 import Column from './columns'
-
 import BoardLine from './BoardLine.jsx'
+import Token from './token/index.jsx'
 
-// eslint-disable-next-line react/prop-types
-const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlayerTurn, matchesToWin}) => {
-    const PLAYER_ATTRIBUTE = 'data-player-id'
+const Board = ({
+    amountColumns,
+    amountRows,
+    curPlayer,
+    amountPlayers,
+    updatePlayerTurn,
+    matchesToWin
+}) => {
+    const PLAYER_ATTRIBUTE = 'data-player-id' // Custom attribute to track which player placed a token
 
-    const boardRef = useRef(undefined)
-    const [totalAmountOfTokensPlaced, setTotalAmountTokensPlaced] = useState(0)
+    const boardRef = useRef(undefined) // Ref to reference the entire board
+    const [totalAmountOfTokensPlaced, setTotalAmountTokensPlaced] = useState(0) // Tracks the total number of tokens placed on the board
 
+    // Create an array representing columns of the board, filled with undefined initially
     const columns = Array(amountColumns).fill(undefined)
 
+    // Updates the total number of tokens placed by incrementing the state
     const updateTotalAmountTokensPlaced = () => setTotalAmountTokensPlaced((prev) => prev + 1)
 
+    // Function to check if there is a winner after a token is placed
     const checkWinner = (clickedColumnPos, lastSelectedRowPos) => {
-        const columns = boardRef.current.lastElementChild.children
+        const columns = boardRef.current.children[0].children
         const clickedColumn = columns[clickedColumnPos]
         const minTokensToWin = amountPlayers * matchesToWin - 2
 
-        // It must be a minimum number of tokens to check if a winner exists.
+        // Ensure there are enough tokens on the board before checking for a winner
         const thereAreNotMinOfTokensToWin = totalAmountOfTokensPlaced < minTokensToWin
 
         if (thereAreNotMinOfTokensToWin)
@@ -28,8 +38,10 @@ const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlaye
         const rowsOfClickedColumn = clickedColumn.children
         const lastPlayerWhoPutToken = rowsOfClickedColumn[lastSelectedRowPos].getAttribute(PLAYER_ATTRIBUTE)
 
+        // Create a new BoardLine instance to check for winning matches
         const boardLine = new BoardLine(PLAYER_ATTRIBUTE, matchesToWin)
         
+        // Check if the current move creates a line with enough matching tokens
         const tokensWhichMatched = boardLine.checkForNumberOfMatches(
             columns,
             clickedColumnPos,
@@ -38,36 +50,61 @@ const Board = ({amountColumns, amountRows, curPlayer, amountPlayers, updatePlaye
             amountRows
         )
 
+        // If the number of matched tokens equals the required matches to win, declare a winner
+        if (tokensWhichMatched.length !== matchesToWin) {
+            return
+        }
+
+        someoneHasWon(curPlayer.name, tokensWhichMatched)
+    }
+
+    const someoneHasWon = (playerName, tokensWhichMatched) => {
+        console.log(playerName)
         console.log(tokensWhichMatched)
     }
 
-    return <article 
-        className={`grid place-items-center gap-4`}
-        ref={boardRef}
-    >
-        <h1 className='text-4xl p-2'>
-            Connect {matchesToWin}
-        </h1>
-        <div
-            className='border-2 grid'     
-            style={{gridTemplateColumns : `repeat(${amountColumns}, minmax(auto, 1fr))`}}
-        >
-            {
-                columns.map((_, i) => (
-                    <Column 
-                        key={`${Column.displayName}${i}`}
-                        position={i}
-                        amountRows={amountRows}
-                        curPlayer={curPlayer}
-                        updatePlayerTurn={updatePlayerTurn}
-                        checkWinner={checkWinner}
-                        updateTotalAmountTokensPlaced={updateTotalAmountTokensPlaced}
-                        playerAttribute={PLAYER_ATTRIBUTE}
-                    />)
-                )
-            }
+    return (
+        <div>
+            <div
+                className='test-board'
+                ref={boardRef} // Attach the ref to the article element (board container)
+            >
+                <div
+                    className='grid gap-4 rounded-lg p-6'     
+                    style={{gridTemplateColumns: `repeat(${amountColumns}, minmax(auto, 1fr))`}} // Create a grid layout for the columns
+                >
+                    {
+                        // Render the columns of the board dynamically based on the amountColumns
+                        columns.map((_, i) => (
+                            <Column 
+                                key={`${Column.displayName}${i}`} // Use a unique key for each column
+                                position={i} // Pass the column position
+                                amountRows={amountRows} // Pass the number of rows
+                                curPlayer={curPlayer} // Pass the current player object
+                                updatePlayerTurn={updatePlayerTurn} // Pass the function to update player turns
+                                checkWinner={checkWinner} // Pass the function to check for a winner
+                                updateTotalAmountTokensPlaced={updateTotalAmountTokensPlaced} // Pass the function to update token count
+                                playerAttribute={PLAYER_ATTRIBUTE} // Pass the custom player attribute
+                            />
+                        ))
+                    }
+                </div>
+            </div>
         </div>
-    </article>
+    )
 }
 
+// Defining the expected prop types for validation
+Board.propTypes = {
+    amountColumns: PropTypes.number.isRequired,   // Must be a number, required
+    amountRows: PropTypes.number.isRequired,      // Must be a number, required
+    curPlayer: PropTypes.shape({
+        name: PropTypes.string.isRequired,        // curPlayer must be an object with a name property (string, required)
+    }).isRequired,
+    amountPlayers: PropTypes.number.isRequired,   // Must be a number, required
+    updatePlayerTurn: PropTypes.func.isRequired,  // Must be a function, required
+    matchesToWin: PropTypes.number.isRequired     // Must be a number, required
+}
+
+// Exporting the component as default
 export default Board

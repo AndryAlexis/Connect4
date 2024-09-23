@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-unused-vars
+
 export default class BoardLine {
     constructor(playerAttribute, matchesToWin) {
         // Constants representing different directions on the board
@@ -7,12 +7,6 @@ export default class BoardLine {
         this.LINE_BOTTOM = 'onBottom'
         this.LINE_DIAGONAL_LEFT = 'onDiagonalLeft'
         this.LINE_DIAGONAL_RIGHT = 'onDiagonalRight'
-
-        // Properties to track the current state of the line being checked
-        this.column = undefined
-        this.row = undefined
-        this.player = undefined
-        this.elementsThatMatched = [] // Stores the elements that matched the player's token
 
         this.playerAttribute = playerAttribute // Attribute to identify the player (e.g., 'data-player')
         this.matchesToWin = matchesToWin // Number of matches needed to win
@@ -47,9 +41,9 @@ export default class BoardLine {
             .keys(thereAreEnoughtTokens)
             .filter(key => thereAreEnoughtTokens[key] === true)
 
-        // If no direction has enough tokens to possibly win, return undefined
+        // If no direction has enough tokens to possibly win, return an empty array
         if (directionsWhichSomeoneCouldWin.length === 0)
-            return
+            return []
         
         // Check all possible winning lines and return the matches if found
         const tokensWhichMatched = this.checkAllLines(
@@ -61,9 +55,9 @@ export default class BoardLine {
             directionsWhichSomeoneCouldWin
         )
 
-        // If there aren't enough matches to win, return undefined
+        // If there aren't enough matches to win, return an empty array
         if (tokensWhichMatched.length < this.matchesToWin)
-            return
+            return []
 
         return tokensWhichMatched
     }
@@ -79,45 +73,74 @@ export default class BoardLine {
      * @returns {Array} - Array of matching elements if there's a win.
      */
     checkAllLines(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows, directionsWhichSomeoneCouldWin) {
-        let line = undefined
+        let line = []
 
         // Iterate through each possible winning direction
         for (let index = 0; index < directionsWhichSomeoneCouldWin.length; index++) {
             const direction = directionsWhichSomeoneCouldWin[index]
 
-            // Check for a win in each direction
-            if (direction === this.LINE_RIGHT) {
-                line = this.checkRight(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
-                if (line.length === this.matchesToWin) {
-                    return line
-                }
-            }
-            if (direction === this.LINE_LEFT) {
-                line = this.checkLeft(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken)
-                if (line.length === this.matchesToWin) {
-                    return line
-                }
-            }
-            if (direction === this.LINE_BOTTOM) {
-                line = this.checkBottom(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
-                if (line.length === this.matchesToWin) {
-                    return line
-                }
-            }
-            if (direction === this.LINE_DIAGONAL_LEFT) {
-                line = this.checkLeftDiagonally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
-                if (line.length === this.matchesToWin) {
-                    return line
-                }
-            }
-            if (direction === this.LINE_DIAGONAL_RIGHT) {
-                line = this.checkRightDiagonally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows)
-                if (line.length === this.matchesToWin) {
-                    return line
-                }
+            line = this.checkLineAccordingDirection(
+                direction,
+                columns,
+                clickedColumnPos,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken,
+                amountRows
+            )
+
+            if (line.length === this.matchesToWin) {
+                return line
             }
         }
+        return line
+    }
 
+    checkLineAccordingDirection(
+        selectedDirection,
+        columns,
+        clickedColumnPos,
+        lastSelectedRowPos,
+        lastPlayerWhoPutToken,
+        amountRows
+    ) {
+        let line = []
+
+        const lineCheckers = {
+            [this.LINE_LEFT]: () => this.checkLeft(
+                columns,
+                clickedColumnPos,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken
+            ),
+            [this.LINE_RIGHT]: () => this.checkRight(
+                columns,
+                clickedColumnPos,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken
+            ),
+            [this.LINE_DIAGONAL_LEFT]: () => this.checkLeftDiagonally(
+                columns,
+                clickedColumnPos,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken,
+                amountRows
+            ),
+            [this.LINE_DIAGONAL_RIGHT]: () => this.checkRightDiagonally(
+                columns,
+                clickedColumnPos,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken,
+                amountRows
+            ),
+            [this.LINE_BOTTOM]: () => this.checkBottom(
+                columns,
+                clickedColumnPos,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken,
+                amountRows
+            )
+        }
+        line = lineCheckers[selectedDirection]()
         return line
     }
 
@@ -130,24 +153,66 @@ export default class BoardLine {
      * @returns {Array} - Array of matching elements in the left horizontal line.
      */
     checkLeft(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) {
-        this.elementsThatMatched = []
-
+        let elementsThatMatched = []
+        
         // Iterate from the clicked column to the leftmost column
         for (let i = clickedColumnPos; i >= 0; i--) {
-            this.column = columns[i]
-            this.row = this.column.children[lastSelectedRowPos]
-            
-            this.player = this.row.getAttribute(this.playerAttribute)
+            elementsThatMatched= this.checkHorizontally(
+                i,
+                elementsThatMatched,
+                columns,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken
+            )
+        }
+        return elementsThatMatched
+    }
 
-            // If the token matches the last player's, add it to the matched elements
-            if (this.player === lastPlayerWhoPutToken) {
-                this.elementsThatMatched.push(this.row)
-            } else {
-                // If the token doesn't match, return the elements matched so far
-                return this.elementsThatMatched
+    /**
+     * Checks the right line horizontally for a potential win.
+     * @param {Array} columns - Array of columns in the board.
+     * @param {number} clickedColumnPos - The column position where the last token was placed.
+     * @param {number} lastSelectedRowPos - The row position where the last token was placed.
+     * @param {string} lastPlayerWhoPutToken - The identifier of the last player who put a token.
+     * @returns {Array} - Array of matching elements in the right horizontal line.
+     */
+    checkRight(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) {
+        let elementsThatMatched = []
+        let isSamePlayer = false
+
+        // Iterate from the clicked column to the rightmost column
+        for (let i = clickedColumnPos; i < columns.length; i++) {
+            [isSamePlayer, elementsThatMatched] = this.checkHorizontally(
+                i,
+                elementsThatMatched,
+                columns,
+                lastSelectedRowPos,
+                lastPlayerWhoPutToken
+            )
+
+            if (!isSamePlayer) {
+                console.log(elementsThatMatched)
+                return elementsThatMatched
             }
         }
-        return this.elementsThatMatched
+        return elementsThatMatched
+    }
+
+    checkHorizontally(iteration, elementsThatMatched, columns, lastSelectedRowPos, lastPlayerWhoPutToken) {
+        let column = columns[iteration]
+        let row = column.children[lastSelectedRowPos]
+        let player = row.getAttribute(this.playerAttribute)
+        let isSamePlayer = true
+
+        // If the token matches the last player's, add it to the matched elements
+        if (player === lastPlayerWhoPutToken) {
+            elementsThatMatched.push(row)
+        } else {
+            isSamePlayer = false
+            // If the token doesn't match, return the elements matched so far
+            return [isSamePlayer, elementsThatMatched]
+        }
+        return [isSamePlayer, elementsThatMatched]
     }
 
     /**
@@ -160,63 +225,24 @@ export default class BoardLine {
      * @returns {Array} - Array of matching elements in the left diagonal line.
      */
     checkLeftDiagonally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows) {
-        this.elementsThatMatched = []
+        let elementsThatMatched = []
         let diagonalPos = lastSelectedRowPos
 
         // Iterate from the clicked column to the leftmost column, moving diagonally upwards
         for (let i = clickedColumnPos; i >= 0; i--) {
-            this.column = columns[i]
-            this.row = this.column.children[diagonalPos]
-            
-            this.player = this.row.getAttribute(this.playerAttribute)
-
-            if (this.player === lastPlayerWhoPutToken) {
-                this.elementsThatMatched.push(this.row)
-            } else {
-                return this.elementsThatMatched
-            }
-
-            diagonalPos++
-
+            [elementsThatMatched, diagonalPos] = this.checkDiagonally(
+                i,
+                columns,
+                diagonalPos,
+                elementsThatMatched,
+                lastPlayerWhoPutToken,
+            )
             // If the diagonal position exceeds the number of rows, stop checking
             if (diagonalPos >= amountRows) {
-                return this.elementsThatMatched
+                return elementsThatMatched
             }
         }
-        return this.elementsThatMatched
-    }
-
-    /**
-     * Checks the right line horizontally for a potential win.
-     * @param {Array} columns - Array of columns in the board.
-     * @param {number} clickedColumnPos - The column position where the last token was placed.
-     * @param {number} lastSelectedRowPos - The row position where the last token was placed.
-     * @param {string} lastPlayerWhoPutToken - The identifier of the last player who put a token.
-     * @returns {Array} - Array of matching elements in the right horizontal line.
-     */
-    checkRight(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) {
-        this.elementsThatMatched = []
-
-        // Iterate from the clicked column to the rightmost column
-        for (let i = clickedColumnPos; i < columns.length; i++) {
-            this.column = columns[i]
-            this.row = this.column.children[lastSelectedRowPos]
-            
-            this.player = this.row.getAttribute(this.playerAttribute)
-
-            if (this.player === lastPlayerWhoPutToken) {
-                this.elementsThatMatched.push(this.row)
-            } else {
-                // If the token doesn't match, stop checking and return the elements matched so far
-                return this.elementsThatMatched
-            }
-
-            // If the number of matched elements is enough to win, return them
-            if (this.elementsThatMatched.length >= this.matchesToWin) {
-                return this.elementsThatMatched
-            }
-        }
-        return this.elementsThatMatched
+        return elementsThatMatched
     }
 
     /**
@@ -229,30 +255,42 @@ export default class BoardLine {
      * @returns {Array} - Array of matching elements in the right diagonal line.
      */
     checkRightDiagonally(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken, amountRows) {
-        this.elementsThatMatched = []
+        let elementsThatMatched = []
         let diagonalPos = lastSelectedRowPos
 
         // Iterate from the clicked column to the rightmost column, moving diagonally upwards
         for (let i = clickedColumnPos; i < columns.length; i++) {
-            this.column = columns[i]
-            this.row = this.column.children[diagonalPos]
-            
-            this.player = this.row.getAttribute(this.playerAttribute)
-
-            if (this.player === lastPlayerWhoPutToken) {
-                this.elementsThatMatched.push(this.row)
-            } else {
-                return this.elementsThatMatched
-            }
-
-            diagonalPos++
+            [elementsThatMatched, diagonalPos] = this.checkDiagonally(
+                i,
+                columns,
+                diagonalPos,
+                elementsThatMatched,
+                lastPlayerWhoPutToken,
+            )
 
             // If the diagonal position exceeds the number of rows, stop checking
             if (diagonalPos >= amountRows) {
-                return this.elementsThatMatched
+                return elementsThatMatched
             }
         }
-        return this.elementsThatMatched
+        return elementsThatMatched
+    }
+
+    checkDiagonally(iteration, columns, diagonalPos, elementsThatMatched, lastPlayerWhoPutToken) {
+        let column = columns[iteration]
+        let row = column.children[diagonalPos]
+        
+        let player = row.getAttribute(this.playerAttribute)
+
+        if (player === lastPlayerWhoPutToken) {
+            elementsThatMatched.push(row)
+        } else {
+            return elementsThatMatched
+        }
+
+        diagonalPos++
+
+        return [elementsThatMatched, diagonalPos]
     }
 
     /**

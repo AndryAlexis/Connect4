@@ -1,9 +1,12 @@
-// eslint-disable-next-line react/prop-types
+import Token from "../token"
+
 const Row = () => {
     return (
         <span 
-            className="p-2 w-20 h-20 border-2 grid place-content-center rounded-full"
-        ></span>
+            className="test-row w-14 h-14 grid place-content-center rounded-full "
+        >
+            {/* <Token/> */}
+        </span>
     )
 }
 

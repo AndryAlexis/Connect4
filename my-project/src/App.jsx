@@ -11,14 +11,14 @@ const App = () => {
   const players = [
     {
       id : 0,
-      name : 'Player 0',
-      color : 'bg-amber-400',
+      name : 'Andry',
+      color : '!bg-amber-400',
       isTurn : false
     },
     {
       id : 1,
-      name : 'Player 1',
-      color : 'bg-rose-900',
+      name : 'Andry Bot',
+      color : '!bg-rose-900',
       isTurn : true
     }
   ]
@@ -38,27 +38,32 @@ const App = () => {
     setCurPlayer(players[nextPlayerPosition])
   }
 
-  return <main className="w-full h-screen grid place-items-center">
-    <Board 
-      amountColumns={COLUMNS} 
-      amountRows={ROWS}
-      curPlayer={curPlayer}
-      amountPlayers={players.length}
-      updatePlayerTurn={updatePlayerTurn}
-      matchesToWin={MATCHES_TO_WIN}
-    />
-    <div className="absolute right-4 top-4 grid gap-2">
-      {
-        players.map((player, i) => {
-          return <PlayerIndicator 
-            key={`${PlayerIndicator.displayName}${i}`} 
-            ownPlayer={player}
-            curPlayer={curPlayer}
-          />
-        })
-      }
-    </div>
-  </main>
+  return <div className='flex h-screen w-full'>
+    <main className="w-full flex justify-center items-center">
+      <Board 
+        amountColumns={COLUMNS} 
+        amountRows={ROWS}
+        curPlayer={curPlayer}
+        amountPlayers={players.length}
+        updatePlayerTurn={updatePlayerTurn}
+        matchesToWin={MATCHES_TO_WIN}
+      />
+      {/* <div className="absolute right-4 top-4 grid gap-2">
+        {
+          players.map((player, i) => {
+            return <PlayerIndicator 
+              key={`${PlayerIndicator.displayName}${i}`} 
+              ownPlayer={player}
+              curPlayer={curPlayer}
+            />
+          })
+        }
+      </div> */}
+      <aside className='border-2 w-20 h-full'>
+
+      </aside>
+    </main>
+  </div>
 }
 
 export default App
