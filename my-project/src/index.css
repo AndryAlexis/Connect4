@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.parent-test-board {
+    background-color: tomato;
+}
 
 .test-board {
     border: 3px solid rgb(88, 169, 255);

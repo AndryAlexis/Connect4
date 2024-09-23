@@ -154,6 +154,7 @@ export default class BoardLine {
      */
     checkLeft(columns, clickedColumnPos, lastSelectedRowPos, lastPlayerWhoPutToken) {
         let elementsThatMatched = []
+        let isSamePlayer = false
         
         // Iterate from the clicked column to the leftmost column
         for (let i = clickedColumnPos; i >= 0; i--) {
@@ -164,6 +165,10 @@ export default class BoardLine {
                 lastSelectedRowPos,
                 lastPlayerWhoPutToken
             )
+
+            if (!isSamePlayer) {
+                return elementsThatMatched
+            }
         }
         return elementsThatMatched
     }
@@ -191,7 +196,6 @@ export default class BoardLine {
             )
 
             if (!isSamePlayer) {
-                console.log(elementsThatMatched)
                 return elementsThatMatched
             }
         }
@@ -237,8 +241,9 @@ export default class BoardLine {
                 elementsThatMatched,
                 lastPlayerWhoPutToken,
             )
+            console.log(elementsThatMatched)
             // If the diagonal position exceeds the number of rows, stop checking
-            if (diagonalPos >= amountRows) {
+            if (diagonalPos <= amountRows) {
                 return elementsThatMatched
             }
         }
