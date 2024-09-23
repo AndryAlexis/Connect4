@@ -241,7 +241,6 @@ export default class BoardLine {
                 elementsThatMatched,
                 lastPlayerWhoPutToken,
             )
-            console.log(elementsThatMatched)
             // If the diagonal position exceeds the number of rows, stop checking
             if (diagonalPos <= amountRows) {
                 return elementsThatMatched

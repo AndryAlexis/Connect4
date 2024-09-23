@@ -38,8 +38,9 @@ const App = () => {
     setCurPlayer(players[nextPlayerPosition])
   }
 
-  return <div className='flex h-screen w-full'>
-    <main className="w-full flex justify-center items-center">
+  return <div className='test-root flex h-screen w-full'>
+    <input type="checkbox" name="aside-toggle" id="aside-toggle" className='absolute top-10 left-10'/>
+    <main className="w-full flex justify-between items-center">
       <Board 
         amountColumns={COLUMNS} 
         amountRows={ROWS}
@@ -59,8 +60,11 @@ const App = () => {
           })
         }
       </div> */}
-      <aside className='border-2 w-20 h-full'>
+      <aside className='h-full'>
+        <div>
+        <input type='text' className="" />
 
+        </div>
       </aside>
     </main>
   </div>

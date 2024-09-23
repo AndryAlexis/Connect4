@@ -64,29 +64,31 @@ const Board = ({
     }
 
     return (
-        <div
-            className='test-board'
-            ref={boardRef} // Attach the ref to the article element (board container)
-        >
+        <div className='test-parent-board'>
             <div
-                className='grid gap-4 rounded-lg p-6'     
-                style={{gridTemplateColumns: `repeat(${amountColumns}, minmax(auto, 1fr))`}} // Create a grid layout for the columns
+                className='test-board'
+                ref={boardRef} // Attach the ref to the article element (board container)
             >
-                {
-                    // Render the columns of the board dynamically based on the amountColumns
-                    columns.map((_, i) => (
-                        <Column 
-                            key={`${Column.displayName}${i}`} // Use a unique key for each column
-                            position={i} // Pass the column position
-                            amountRows={amountRows} // Pass the number of rows
-                            curPlayer={curPlayer} // Pass the current player object
-                            updatePlayerTurn={updatePlayerTurn} // Pass the function to update player turns
-                            checkWinner={checkWinner} // Pass the function to check for a winner
-                            updateTotalAmountTokensPlaced={updateTotalAmountTokensPlaced} // Pass the function to update token count
-                            playerAttribute={PLAYER_ATTRIBUTE} // Pass the custom player attribute
-                        />
-                    ))
-                }
+                <div
+                    className='grid gap-4 rounded-lg p-6'     
+                    style={{gridTemplateColumns: `repeat(${amountColumns}, minmax(auto, 1fr))`}} // Create a grid layout for the columns
+                >
+                    {
+                        // Render the columns of the board dynamically based on the amountColumns
+                        columns.map((_, i) => (
+                            <Column 
+                                key={`${Column.displayName}${i}`} // Use a unique key for each column
+                                position={i} // Pass the column position
+                                amountRows={amountRows} // Pass the number of rows
+                                curPlayer={curPlayer} // Pass the current player object
+                                updatePlayerTurn={updatePlayerTurn} // Pass the function to update player turns
+                                checkWinner={checkWinner} // Pass the function to check for a winner
+                                updateTotalAmountTokensPlaced={updateTotalAmountTokensPlaced} // Pass the function to update token count
+                                playerAttribute={PLAYER_ATTRIBUTE} // Pass the custom player attribute
+                            />
+                        ))
+                    }
+                </div>
             </div>
         </div>
     )
