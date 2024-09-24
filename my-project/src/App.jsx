@@ -39,7 +39,6 @@ const App = () => {
   }
 
   return <div className='test-root flex h-screen w-full'>
-    <input type="checkbox" name="aside-toggle" id="aside-toggle" className='absolute top-10 left-10'/>
     <main className="w-full flex justify-between items-center">
       <Board 
         amountColumns={COLUMNS} 
@@ -60,9 +59,10 @@ const App = () => {
           })
         }
       </div> */}
+      <input type="checkbox" name="aside-toggle" id="aside-toggle" className='absolute top-10 left-10'/>
       <aside className='h-full'>
         <div>
-        <input type='text' className="" />
+          <input type='text' className="" value={'Andry'}/>
 
         </div>
       </aside>

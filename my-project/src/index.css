@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .test-parent-board {
-    border: 5px solid cyan;
+    /* border: 5px solid cyan; */
     height: 100%;
     height: 100%;
     display: flex;
@@ -56,39 +56,45 @@
 
 }
 
-aside {
-    /* border: 15px solid green; */
-    box-shadow: inset -10px -10px 0 green, inset 10px 10px 0 green;
-    flex: 1;
-    min-width: 300px;
-    max-width: 500px;
+input#aside-toggle + aside {
+    max-width: 300px;
+    min-width: 170px;
     width: 100%;
-
-    transition: transform 300ms, width 300ms, min-width 300ms;
-    -webkit-transition: transform 300ms, width 300ms, min-width 300ms;
-    -moz-transition: transform 300ms, width 300ms, min-width 300ms;
-    -ms-transition: transform 300ms, width 300ms, min-width 300ms;
-    -o-transition: transform 300ms, width 300ms, min-width 300ms;
-
-    will-change: transform width min-width;
-
+    --time: 400ms;
+    transition: width var(--time), min-width var(--time);
+    -webkit-transition: width var(--time), min-width var(--time);
+    -moz-transition: width var(--time), min-width var(--time);
+    -ms-transition: width var(--time), min-width var(--time);
+    -o-transition: width var(--time), min-width var(--time);
+    will-change: transform, min-width, width;
     overflow: hidden;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+}
+
+
+input#aside-toggle:checked + aside {
+    min-width: 0;
+    width: 0;
 }
 
 aside > div {
-    margin: 10px;
+    box-shadow: inset -10px -10px 0 green, inset 10px 10px 0 green;
     border: 1px solid red;
     overflow: hidden;
+    transition: translate var(--time);
+    -webkit-transition: translate var(--time);
+    -moz-transition: translate var(--time);
+    -ms-transition: translate var(--time);
+    -o-transition: translate var(--time);
+    transition-timing-function: ease;
+    transition-delay: 0s;
+
+    height: 100%;
+    padding: 10px;
+    will-change: translate;
 }
 
-
-input#aside-toggle:checked + main > aside {
-    /* transform: translateX(100%);
-    -webkit-transform: translateX(100%);
-    -moz-transform: translateX(100%);
-    -ms-transform: translateX(100%);
-    -o-transform: translateX(100%); */
-
-    min-width: 0;
-    width: 0;
+input#aside-toggle:checked + aside > div {
+    translate: 100%;
 }
