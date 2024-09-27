@@ -158,7 +158,7 @@ export default class BoardLine {
         
         // Iterate from the clicked column to the leftmost column
         for (let i = clickedColumnPos; i >= 0; i--) {
-            elementsThatMatched= this.checkHorizontally(
+            [isSamePlayer, elementsThatMatched] = this.checkHorizontally(
                 i,
                 elementsThatMatched,
                 columns,
@@ -232,6 +232,8 @@ export default class BoardLine {
         let elementsThatMatched = []
         let diagonalPos = lastSelectedRowPos
 
+        console.log('LEFT DIAGONALLY')
+
         // Iterate from the clicked column to the leftmost column, moving diagonally upwards
         for (let i = clickedColumnPos; i >= 0; i--) {
             [elementsThatMatched, diagonalPos] = this.checkDiagonally(
@@ -242,7 +244,9 @@ export default class BoardLine {
                 lastPlayerWhoPutToken,
             )
             // If the diagonal position exceeds the number of rows, stop checking
-            if (diagonalPos <= amountRows) {
+            console.log('COMPARACION', diagonalPos, amountRows, diagonalPos <= amountRows)
+            if (diagonalPos >= amountRows) {
+                console.log(elementsThatMatched)
                 return elementsThatMatched
             }
         }
@@ -289,7 +293,8 @@ export default class BoardLine {
         if (player === lastPlayerWhoPutToken) {
             elementsThatMatched.push(row)
         } else {
-            return elementsThatMatched
+            // console.log(elementsThatMatched)
+            return [elementsThatMatched, diagonalPos]
         }
 
         diagonalPos++

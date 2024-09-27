@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react'
 import PropTypes from 'prop-types' // Importing PropTypes for validation
-import Column from './columns'
+import Column from './Column'
 import BoardLine from './BoardChecker.jsx'
-import Token from './token/index.jsx'
 
 const Board = ({
     amountColumns,
