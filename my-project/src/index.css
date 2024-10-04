@@ -2,9 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+body {
+    background-color: rgb(235, 235, 235);
+}
+
+.glare {
+  @apply 
+  outline outline-2 outline-white
+  !shadow-[0_0_10px_6px_white]
+}
+
 .rose {
     @apply  
-    !bg-rose-900 
+    !bg-rose-900
     [&>span]:border-[rgb(255,71,39)] 
     [&>span]:bg-[rgb(255,137,137)] 
     [&>span]:[background:linear-gradient(90deg,rgba(255,137,137,1)0%,rgba(255,39,39,1)35%,rgba(255,0,0,1)100%)] 
@@ -42,8 +54,6 @@
     background: -moz-linear-gradient(125deg, rgb(75, 189, 255) 0%, rgba(27,165,255,1) 35%, rgba(0,124,255,1) 100%);
     background: -webkit-linear-gradient(125deg, rgb(77, 190, 255) 0%, rgba(27,165,255,1) 35%, rgba(0,124,255,1) 100%);
     background: linear-gradient(125deg, rgb(78, 190, 255) 0%, rgba(27,165,255,1) 35%, rgba(0,124,255,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#69c6fb",endColorstr="#007cff",GradientType=1);
-
     position: relative;
     padding: 20px;
     border-radius: 10px;
@@ -52,43 +62,70 @@
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
 }
+
+div[data-tilt] {
+  width: auto !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+}
 .test-board > div {
     border: 2px solid rgb(69, 154, 245);
     box-shadow: inset 0 0 10px rgba(0, 21, 111, 0.5), inset 10px 0 20px rgba(0, 20, 111, 0.312);
+}
+.test-column {
+  background:         
+  linear-gradient(90deg, var(--_color, transparent) 50%, transparent 50%),    
+  linear-gradient(90deg, var(--_color, transparent) 50%, transparent 50%),    
+  linear-gradient(0deg, var(--_color, transparent) 50%, transparent 50%),    
+  linear-gradient(0deg, var(--_color, transparent) 50%, transparent 50%);
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+  padding: 10px;
+  animation: border-dance 17s infinite linear;
+  -webkit-animation: border-dance 17s infinite linear;
+}
+.test-column:hover {
+  --_color: white;
+}
+
+@keyframes border-dance {
+  0% {
+    background-position: 0 0, 100% 100%, 0 100%, 100% 0;
+  }
+  100% {
+    background-position: 100% 0, 0 100%, 0 0, 100% 100%;
+  }
 }
 .test-row {
     border: 5px solid rgba(27, 137, 255, 0.782);
     border-left-color: rgba(255, 255, 255, 0.605);
     border-top-color: rgba(255, 255, 255, 0.605);
     box-shadow: 
-    0 0 10px rgba(0, 55, 133, 0.642),
+    5px 5px 10px 1px rgba(0, 55, 133, 0.642),
     inset 0 0 20px rgba(0, 0, 0, 0.1),
     inset 0 0 10px rgba(0, 0, 0, 0.2);
     background-color: rgba(26, 97, 218, 0.562);
 }
-input#aside-toggle + aside {
-    max-width: 300px;
-    min-width: 170px;
-    width: 100%;
-    --time: 400ms;
-    transition: width var(--time), min-width var(--time);
-    -webkit-transition: width var(--time), min-width var(--time);
-    -moz-transition: width var(--time), min-width var(--time);
-    -ms-transition: width var(--time), min-width var(--time);
-    -o-transition: width var(--time), min-width var(--time);
-    will-change: transform, min-width, width;
-    overflow: hidden;
-    transition-timing-function: ease;
-    transition-delay: 0s;
+main aside {
+  min-width: 300px;
+  width: 100%;
+  max-width: 300px;
+  --time: 500ms;
+  will-change: min-width, width;
+  transition-timing-function: ease;
+  transition-property: width, min-width;
+  transition-duration: var(--time);
 }
-input#aside-toggle:checked + aside {
+
+input#aside-toggle:not(:checked) ~ main aside {
     min-width: 0;
     width: 0;
 }
-aside > div {
-    box-shadow: inset -10px -10px 0 green, inset 10px 10px 0 green;
-    border: 1px solid red;
+
+input#aside-toggle ~ main aside > div:last-child {
+    position: relative;
     overflow: hidden;
+    background-color: pink;
     transition: translate var(--time);
     -webkit-transition: translate var(--time);
     -moz-transition: translate var(--time);
@@ -98,9 +135,34 @@ aside > div {
     transition-delay: 0s;
 
     height: 100%;
-    padding: 10px;
     will-change: translate;
+
+    background-color: cyan;
 }
-input#aside-toggle:checked + aside > div {
-    translate: 100%;
+
+aside > div > div {
+  height: inherit;
+}
+
+input#winner-menu + main aside > div > div:last-child {
+  transition-property: translate;
+  transition-duration: 500ms;
+  transition-timing-function: ease;
+
+  background-color: tomato;
+}
+
+
+/* Winner menu */
+input#winner-menu:not(:checked) + main aside > div > div:last-child {
+  translate: 100%;
+  opacity: 0;
+
+  transition-property: translate, opacity;
+  transition-duration: 500ms, 0;
+  transition-delay: 0ms, 500ms;
+}
+
+input#winner-menu:checked + main aside > div > div:last-child {
+  translate: 0%;
 }

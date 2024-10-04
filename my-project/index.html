@@ -3,9 +3,33 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite + React</title>
+  <title>Connect 4</title>
+  <script>
+    const person = (newName => {
+      let name = newName
+
+      return {
+        setName(newName) {
+          name = newName
+        },
+        getName() {
+          return name
+        }
+      }
+    });
+
+    const newPerson = person('Andry')
+    console.log(newPerson.getName())
+    newPerson.setName('Alexis')
+    console.log(newPerson.getName())
+
+    const newPerson1 = person('Joel')
+
+    console.log(newPerson1.getName())
+    console.log(newPerson.getName())
+
+  </script>
 </head>
 
 <body>

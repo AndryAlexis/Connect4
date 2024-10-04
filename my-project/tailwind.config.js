@@ -6,7 +6,11 @@ export default {
     "./components/**/*.jsx"
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        anton: ["Anton", "sans-serif"]
+      }
+    },
   },
   plugins: [],
   safelist: [

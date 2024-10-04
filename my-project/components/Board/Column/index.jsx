@@ -9,7 +9,8 @@ const Column = ({
     updatePlayerTurn,
     checkWinner,
     updateTotalAmountTokensPlaced,
-    playerAttribute
+    playerAttribute,
+    hasWon
 }) => {
     const columnRef = useRef(undefined)
     const [rowPos, setRowPos] = useState(amountRows - 1)
@@ -26,17 +27,20 @@ const Column = ({
         updateTotalAmountTokensPlaced()
     }
 
-    const handleClick = () => {
+    const handleClick = (playerAttribute) => {
+        //If someone has won, the game has finished
+        if (hasWon)
+            return
         putTokenOnBoard()
         updatePlayerTurn()
-        checkWinner(position, rowPos, columnRef)
+        checkWinner(position, rowPos, playerAttribute)
         setRowPos(rowPos - 1)
     }
 
     return (
         <div
-            className="grid gap-4 cursor-pointer"
-            onClick={handleClick}
+            className="test-column grid gap-4 cursor-pointer"
+            onClick={() => handleClick(playerAttribute)}
             ref={columnRef}
         >
                 {
@@ -61,7 +65,8 @@ Column.propTypes = {
     updatePlayerTurn: PropTypes.func.isRequired,            // Must be a function, required
     checkWinner: PropTypes.func.isRequired,                 // Must be a function, required
     updateTotalAmountTokensPlaced: PropTypes.func.isRequired, // Must be a function, required
-    playerAttribute: PropTypes.string.isRequired            // Must be a string, required
+    playerAttribute: PropTypes.string.isRequired,            // Must be a string, required
+    hasWon: PropTypes.bool.isRequired
 }
 
 // Exporting the component as default
