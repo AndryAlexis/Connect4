@@ -4,6 +4,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
 body {
     background-color: rgb(235, 235, 235);
 }
@@ -107,7 +111,7 @@ div[data-tilt] {
 }
 main aside {
   /* max-width: 300px; */
-  flex-shrink: 500px;
+  /* flex-shrink: 500px; */
   /* width: auto; */
   --time: 300ms;
   will-change: flex-basis, width;
@@ -118,12 +122,10 @@ main aside {
 
 input#aside-toggle {
   &:not(:checked) ~ main aside {
-    background-color: green;
     flex-basis: 0%;
   }
 
   &:checked ~ main aside {
-    /* background-color: red; */
     flex-basis: 500px;
   }
   
