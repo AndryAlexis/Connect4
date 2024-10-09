@@ -90,8 +90,8 @@ const Board = ({
     }
 
     return <>
-        <div className='test-parent-board'>
-            <Tilt options={{ scale: 1, max: 10, speed: 0 }} >
+        <div className='test-parent-board relative testing-bg'>
+            <Tilt options={{ scale: 1 }} >
                 <div
                     className='test-board'
                     ref={boardRef} // Attach the ref to the article element (board container)
@@ -119,6 +119,12 @@ const Board = ({
                     </div>
                 </div>
             </Tilt>
+            <label
+                htmlFor={"aside-toggle"}
+                className='absolute w-8 h-8 bg-[#f0f0ff] z-10 shadow-md top-[8px] grid place-content-center cursor-pointer left-[calc(100%-32px-8px)] rounded-full'
+            >
+                V
+            </label>
         </div>
     </> 
 }

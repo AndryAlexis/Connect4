@@ -1,47 +1,38 @@
 import { useState, useRef } from 'react'
-
 import Board from "../Board"
-// import PlayerIndicator from "../components/PlayerIndicator"
 
+const updatePlayerTurn = (curPlayer, setCurPlayer, players) => {
+  const nextPlayerPosition = curPlayer.id + 1
+
+  if (nextPlayerPosition >= players.length) {
+    setCurPlayer(players[0])
+    return
+  }
+
+  setCurPlayer(players[nextPlayerPosition])
+}
+
+const toggleWinnerMenu = ({ current }) => current.checked = !current.checked
+const showMenuChecker = ({current}) => current.checked = true
+  
 const App = () => {
-  const COLUMNS = 9
-  const ROWS = 7
-  const MATCHES_TO_WIN = 4
+  const GAME_SETTINGS = {
+    COLUMNS: 9,
+    ROWS: 7,
+    MATCHES_TO_WIN: 4,
+    PLAYERS: [
+      { id: 0, name : 'Andry', color: 'amber', isTurn : true },
+      { id: 1, name: 'Andry Bot', color: 'rose', isTurn: false },
+    ]
+  }
+  const {COLUMNS, ROWS, MATCHES_TO_WIN, PLAYERS} = GAME_SETTINGS
 
-  const players = [
-    {
-      id : 0,
-      name : 'Andry',
-      color: 'amber',
-      isTurn : false
-    },
-    {
-      id : 1,
-      name : 'Andry Bot',
-      color: 'rose',
-      isTurn : true
-    }
-  ]
   const asideMenuRef = useRef(null)
   const winnerMenuRef = useRef(null)
 
-  const firstPlayer = players.filter(player => player.isTurn === true)[0]
+  const firstPlayer = PLAYERS.find(player => player.isTurn === true)
   const [curPlayer, setCurPlayer] = useState(firstPlayer)
 
-  const showMenuChecker = () => asideMenuRef.current.checked = true
-  const toggleWinnerMenu = () => winnerMenuRef.current.checked = !winnerMenuRef.current.checked
-
-  const updatePlayerTurn = () => {
-    const curPlayerPosition = curPlayer.id
-    const nextPlayerPosition = curPlayerPosition + 1
-
-    if (nextPlayerPosition >= players.length) {
-      setCurPlayer(players[0])
-      return
-    }
-
-    setCurPlayer(players[nextPlayerPosition])
-  }
 
   return <div className='test-root flex h-screen w-full'>
     <input
@@ -67,48 +58,21 @@ const App = () => {
         amountColumns={COLUMNS} 
         amountRows={ROWS}
         curPlayer={curPlayer}
-        amountPlayers={players.length}
-        updatePlayerTurn={updatePlayerTurn}
+        amountPlayers={PLAYERS.length}
+        updatePlayerTurn={() => updatePlayerTurn(curPlayer, setCurPlayer, PLAYERS)}
         matchesToWin={MATCHES_TO_WIN}
-        showMenuChecker={showMenuChecker}
-        toggleWinnerMenu={toggleWinnerMenu}
+        showMenuChecker={() => showMenuChecker(asideMenuRef)}
+        toggleWinnerMenu={() => toggleWinnerMenu(winnerMenuRef)}
       />
-      {/* <div className="absolute right-4 top-4 grid gap-2">
-        {
-          players.map((player, i) => {
-            return <PlayerIndicator 
-              key={`${PlayerIndicator.displayName}${i}`} 
-              ownPlayer={player}
-              curPlayer={curPlayer}
-            />
-          })
-        }
-      </div> */}
-      <aside className='h-full relative'>
-        <label
-          htmlFor={"aside-toggle"}
-          className='absolute w-8 h-8 -left-8 top-4 grid place-content-center text-white bg-slate-400 cursor-pointer'
-        >
-          lol
-        </label>
-        <div>
-          <div>
-            <input type='text' value={'Andry'}/>
-          </div>
-          <div className='absolute inset-0 w-full h-full font-anton font-bold grid place-content-center gap-4'>
-            <h2 className='text-3xl flex flex-wrap flex-col justify-center items-center'>
-              <span className='text-5xl'>
-                {curPlayer.name}
-              </span>
-              <span>
-                Has Won!
-              </span>
-            </h2>
-            <button onClick={toggleWinnerMenu} className="text-2xl bg-slate-400 border-2 border-black py-2 px-4">
-              Start Again
-            </button>
-          </div>
-        </div>
+      <aside className='h-full relative overflow-hidden shadow-md bg-[#f0f0ff]'>
+        <section className='m-4'>
+          <h1 className='text-2xl font-bold border-b-[1px] pb-2'>
+            Connect 4
+          </h1>
+          <form className="">
+
+          </form>
+        </section>
 
       </aside>
     </main>

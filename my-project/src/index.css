@@ -39,7 +39,6 @@ body {
 }
 
 .test-parent-board {
-    /* border: 5px solid cyan; */
     height: 100%;
     height: 100%;
     display: flex;
@@ -107,62 +106,52 @@ div[data-tilt] {
     background-color: rgba(26, 97, 218, 0.562);
 }
 main aside {
-  min-width: 300px;
-  width: 100%;
-  max-width: 300px;
-  --time: 500ms;
-  will-change: min-width, width;
-  transition-timing-function: ease;
-  transition-property: width, min-width;
+  /* max-width: 300px; */
+  flex-shrink: 500px;
+  /* width: auto; */
+  --time: 300ms;
+  will-change: flex-basis, width;
+  transition-property: all;
+  transition-timing-function: ease-in-out;
   transition-duration: var(--time);
 }
 
-input#aside-toggle:not(:checked) ~ main aside {
-    min-width: 0;
-    width: 0;
+input#aside-toggle {
+  &:not(:checked) ~ main aside {
+    background-color: green;
+    flex-basis: 0%;
+  }
+
+  &:checked ~ main aside {
+    /* background-color: red; */
+    flex-basis: 500px;
+  }
+  
+  &~ main aside {
+    max-width: 375px;
+  }
 }
 
 input#aside-toggle ~ main aside > div:last-child {
-    position: relative;
-    overflow: hidden;
-    background-color: pink;
-    transition: translate var(--time);
-    -webkit-transition: translate var(--time);
-    -moz-transition: translate var(--time);
-    -ms-transition: translate var(--time);
-    -o-transition: translate var(--time);
-    transition-timing-function: ease;
-    transition-delay: 0s;
 
-    height: 100%;
-    will-change: translate;
-
-    background-color: cyan;
-}
-
-aside > div > div {
-  height: inherit;
 }
 
 input#winner-menu + main aside > div > div:last-child {
-  transition-property: translate;
-  transition-duration: 500ms;
-  transition-timing-function: ease;
 
-  background-color: tomato;
 }
-
 
 /* Winner menu */
-input#winner-menu:not(:checked) + main aside > div > div:last-child {
-  translate: 100%;
-  opacity: 0;
+input#winner-menu{
+  &:not(:checked) + main aside > div > div:last-child {
 
-  transition-property: translate, opacity;
-  transition-duration: 500ms, 0;
-  transition-delay: 0ms, 500ms;
+  }
+
+  &:checked + main aside > div > div:last-child {
+  }
 }
 
-input#winner-menu:checked + main aside > div > div:last-child {
-  translate: 0%;
+.testing-bg {
+  background-color: #e5e5f7;
+  background-image: radial-gradient(#202020 0.5px, #e5e5f7 0.5px);
+  background-size: 10px 10px;
 }
