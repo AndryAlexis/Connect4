@@ -154,6 +154,6 @@ input#winner-menu{
 
 .testing-bg {
   background-color: #e5e5f7;
-  background-image: radial-gradient(#202020 0.5px, #e5e5f7 0.5px);
+  background-image: radial-gradient(#c9c9c9 .8px, #e5e5f7 .8px);
   background-size: 10px 10px;
 }

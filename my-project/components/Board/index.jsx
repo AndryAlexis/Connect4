@@ -13,7 +13,7 @@ const Board = ({
     updatePlayerTurn,
     matchesToWin,
     showMenuChecker,
-    toggleWinnerMenu
+    setPlayerWhoWon
 }) => {
     const jsConfetti = useRef(null)
 
@@ -69,18 +69,14 @@ const Board = ({
     }
 
     const showConfetti = async () => {
-        // async/await
         await jsConfetti.current.addConfetti()
-        console.log('Confetti animation completed!')
         jsConfetti.current.clearCanvas()
     }
 
     const someoneHasWon = (playerName, tokensWhichMatched = []) => {
         toggleHasWon()
         showMenuChecker()
-        toggleWinnerMenu()
-
-        console.log(tokensWhichMatched)
+        setPlayerWhoWon(playerName)
 
         tokensWhichMatched.forEach(token => {
             token.classList.add('glare')
@@ -119,12 +115,6 @@ const Board = ({
                     </div>
                 </div>
             </Tilt>
-            <label
-                htmlFor={"aside-toggle"}
-                className='absolute w-8 h-8 bg-[#f0f0ff] z-10 shadow-md top-[8px] grid place-content-center cursor-pointer left-[calc(100%-32px-8px)] rounded-full'
-            >
-                V
-            </label>
         </div>
     </> 
 }
@@ -140,7 +130,7 @@ Board.propTypes = {
     updatePlayerTurn: PropTypes.func.isRequired,  // Must be a function, required
     matchesToWin: PropTypes.number.isRequired,     // Must be a number, required
     showMenuChecker: PropTypes.func.isRequired,
-    toggleWinnerMenu: PropTypes.func.isRequired
+    setPlayerWhoWon: PropTypes.func.isRequired
 }
 
 // Exporting the component as default
