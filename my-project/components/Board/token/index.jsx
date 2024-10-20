@@ -15,8 +15,4 @@ const Token = () => {
     )
 }
 
-Token.propTypes = {
-    color : PropTypes.string
-}
-
-export default Token;
+export default Token

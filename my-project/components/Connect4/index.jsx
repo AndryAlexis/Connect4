@@ -1,60 +1,87 @@
 import { useState, useRef } from 'react'
+import { useSwitchPlayer } from './useSwitchPlayer'
+import { useOpenAsideMenu } from './useOpenAsideMenu'
+import { gameSettings } from './gameSettings'
 import Board from "../Board"
 import Menu from '../Menu'
 
-const updatePlayerTurn = (curPlayer, setCurPlayer, players) => {
-  const nextPlayerPosition = curPlayer.id + 1
-
-  if (nextPlayerPosition >= players.length) {
-    setCurPlayer(players[0])
-    return
-  }
-
-  setCurPlayer(players[nextPlayerPosition])
-}
-
-const showMenuChecker = ({current}) => current.checked = true
-  
-const App = () => {
-  const GAME_SETTINGS = {
-    COLUMNS: 9,
-    ROWS: 7,
-    MATCHES_TO_WIN: 4,
-    PLAYERS: [
-      { id: 0, name : 'Amber', color: 'amber', isTurn : true },
-      { id: 1, name: 'Rose', color: 'rose', isTurn: false },
-    ]
-  }
-  const {COLUMNS, ROWS, MATCHES_TO_WIN, PLAYERS} = GAME_SETTINGS
+// App.jsx
+const App = _ => {
+  const { COLUMNS, ROWS, MATCHES_TO_WIN, PLAYERS } = gameSettings
 
   const asideMenuRef = useRef(null)
+  const [currentPlayer, setCurrentPlayer] = useState(PLAYERS.find(player => player.isTurn))
+  // const [winner, setWinner] = useState('Nobody')
+  const [winner, setWinner] = useState({
+    name : 'Nobody',
+    state : false
+  })
+  const boardRef = useRef(null) // Reference to the board element
 
-  const [curPlayer, setCurPlayer] = useState(PLAYERS.find(player => player.isTurn === true))
-  const [playerWhoWon, setPlayerWhoWon] = useState('Anybody')
+  const switchPlayer = useSwitchPlayer(currentPlayer, setCurrentPlayer, PLAYERS)
+  const openMenu = useOpenAsideMenu(asideMenuRef)
 
-  return <div className='test-root flex h-screen w-full'>
-    <input
-      hidden
-      type="checkbox"
-      name="aside-toggle"
-      id="aside-toggle"
-      ref={asideMenuRef}
-      defaultChecked={false}
-    />
-    <main className="w-full flex justify-between items-center relative">
-      <Board 
-        amountColumns={COLUMNS} 
-        amountRows={ROWS}
-        curPlayer={curPlayer}
-        amountPlayers={PLAYERS.length}
-        updatePlayerTurn={() => updatePlayerTurn(curPlayer, setCurPlayer, PLAYERS)}
-        matchesToWin={MATCHES_TO_WIN}
-        showMenuChecker={() => showMenuChecker(asideMenuRef)}
-        setPlayerWhoWon={setPlayerWhoWon}
+  const declareWinnerState = state => setWinner(prev => ({
+    ...prev, state
+  }))
+
+  const declareWinnerName = name => setWinner(prev => ({
+    ...prev, name
+  }))
+
+  const [columnStates, setColumnStates] = useState(
+    Array(COLUMNS).fill(null).map(_ => ({
+        rowPos: ROWS - 1
+    }))
+  )
+
+  const updateColumnStateByPosition = (newValue, position) => {
+    setColumnStates(prev => {
+      const newArray = [...prev]
+      newArray[position] = {rowPos: newValue}
+      return newArray
+    })
+  }
+  return (
+    <div className="test-root flex h-screen w-full">
+      <input
+        hidden
+        type="checkbox"
+        name="aside-toggle"
+        id="aside-toggle"
+        ref={asideMenuRef}
+        checked={winner.state}
+        readOnly
       />
-      <Menu playerWhoWon={playerWhoWon}/>
-    </main>
-  </div>
-}
 
+      <main className="w-full flex justify-between items-center relative">
+        <Board
+          amountColumns={COLUMNS}
+          amountRows={ROWS}
+          currentPlayer={currentPlayer}
+          totalPlayers={PLAYERS.length}
+          switchToNextPlayer={switchPlayer}
+          matchesToWin={MATCHES_TO_WIN}
+          openAsideMenu={openMenu}
+          declareWinnerName={declareWinnerName}
+          declareWinnerState={declareWinnerState}
+          winnerState={winner.state}
+          updateColumnStateByPosition={updateColumnStateByPosition}
+          columnStates={columnStates}
+          ref={boardRef}
+        />
+
+        <Menu
+          winnerName={winner.name}
+          boardRef={boardRef}
+          players={PLAYERS}
+          columnsLength={COLUMNS}
+          rowsLength={ROWS}
+          declareWinnerState={declareWinnerState}
+          setColumnStates={setColumnStates}
+        />
+      </main>
+    </div>
+  )
+}
 export default App

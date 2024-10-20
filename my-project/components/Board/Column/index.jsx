@@ -5,49 +5,52 @@ import Row from '../Row'
 const Column = ({
     position,
     amountRows,
-    curPlayer,
-    updatePlayerTurn,
-    checkWinner,
-    updateTotalAmountTokensPlaced,
+    currentPlayer,
+    switchToNextPlayer,
+    checkForWinner,
+    incrementTotalTokensPlaced,
     playerAttribute,
-    hasWon
+    winnerState,
+    updateColumnState,
+    columnState
 }) => {
     const columnRef = useRef(undefined)
-    const [rowPos, setRowPos] = useState(amountRows - 1)
+    // const [rowPos, setRowPos] = useState(amountRows - 1)
 
     const rows = Array(amountRows).fill(null)
 
     const putTokenOnBoard = () => {
-        if (rowPos < 0) return
+        if (columnState.rowPos < 0) return
 
-        const lastChild = columnRef.current.children[rowPos]
-        lastChild.classList.add(`${curPlayer.color}`)
-        lastChild.setAttribute(`${playerAttribute}`, curPlayer.id)
+        const lastChild = columnRef.current.children[columnState.rowPos]
+        lastChild.classList.add(`${currentPlayer.color}`)
+        lastChild.setAttribute(`${playerAttribute}`, currentPlayer.id)
         
-        updateTotalAmountTokensPlaced()
+        incrementTotalTokensPlaced()
     }
 
-    const handleClick = (playerAttribute) => {
+    const handleClick = () => {
         //If someone has won, the game has finished
-        if (hasWon)
+        if (winnerState)
             return
         putTokenOnBoard()
-        updatePlayerTurn()
-        checkWinner(position, rowPos, playerAttribute)
-        setRowPos(rowPos - 1)
+        switchToNextPlayer()
+        checkForWinner(position, columnState.rowPos)
+        // setRowPos(rowPos - 1)
+        updateColumnState(columnState.rowPos - 1)
     }
 
     return (
         <div
             className="test-column grid gap-4 cursor-pointer"
-            onClick={() => handleClick(playerAttribute)}
+            onClick={handleClick}
             ref={columnRef}
         >
-                {
-                    rows.map((_, i) => (
-                        <Row key={`${Row.displayName}${i}`}></Row>
-                    ))
-                }
+            {
+                rows.map((_, i) => (
+                    <Row key={`${Row.displayName}${i}`}></Row>
+                ))
+            }
         </div>
     )
 }
@@ -58,15 +61,16 @@ Column.displayName = 'Column'
 Column.propTypes = {
     position: PropTypes.number.isRequired,                  // Must be a number, required
     amountRows: PropTypes.number.isRequired,                // Must be a number, required
-    curPlayer: PropTypes.shape({                            // Must be an object with specific shape
+    currentPlayer: PropTypes.shape({                            // Must be an object with specific shape
         id: PropTypes.number.isRequired,                    // Player ID should be a required number
         color: PropTypes.string.isRequired,               // Player color should be a required string
     }).isRequired,
-    updatePlayerTurn: PropTypes.func.isRequired,            // Must be a function, required
-    checkWinner: PropTypes.func.isRequired,                 // Must be a function, required
-    updateTotalAmountTokensPlaced: PropTypes.func.isRequired, // Must be a function, required
+    switchToNextPlayer: PropTypes.func.isRequired,            // Must be a function, required
+    checkForWinner: PropTypes.func.isRequired,                 // Must be a function, required
+    incrementTotalTokensPlaced: PropTypes.func.isRequired, // Must be a function, required
     playerAttribute: PropTypes.string.isRequired,            // Must be a string, required
-    hasWon: PropTypes.bool.isRequired
+    winnerState: PropTypes.bool.isRequired,
+    updateColumnState: PropTypes.func.isRequired,
 }
 
 // Exporting the component as default
