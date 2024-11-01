@@ -1,8 +1,49 @@
-# React + Vite
+# Connect 4 Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern implementation of the classic Connect 4 game built with *React* and *Vite*, featuring a sleek design and smooth animations.
 
-Currently, two official plugins are available:
+![Connect 4 Game](game-screenshot.png) <!-- Consider adding a screenshot of your game -->
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+
+- 🎮 Classic Connect 4 gameplay mechanics
+- 🎨 Modern UI with smooth animations and 3D effects
+- ✨ Victory celebration with confetti animation
+- 🎯 Win detection in all directions (horizontal, vertical, diagonal)
+
+## Technical Highlights
+
+- Built with React 18 and Vite for optimal performance
+- Tailwind CSS for styling with custom animations
+- Component-based architecture for maintainability
+- ESLint configuration for code quality
+- Prop-types for component documentation and type checking
+
+## Game Components
+
+The game is built with several key components:
+
+- **Board**: Main game container with win detection logic
+- **Column**: Handles token placement and click events
+- **Row**: Represents individual cells with 3D visual effects
+- **Token**: Player tokens with distinct colors
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+```bash
+# Using npm
+npm install
+
+# Using yarn 
+yarn install
+
+# Using pnpm
+pnpm install
+```
+3. Run the development server:
+```bash
+npm run dev
+```	
+
