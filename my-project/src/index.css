@@ -1,159 +1,96 @@
+/* Import Anton font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+/* Import Tailwind CSS base styles, components and utilities */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-    background-color: rgb(235, 235, 235);
-}
-
-.glare {
-  @apply 
-  outline outline-2 outline-white
-  !shadow-[0_0_10px_6px_white]
-}
-
-.rose {
-    @apply  
-    !bg-rose-900
-    [&>span]:border-[rgb(255,71,39)] 
-    [&>span]:bg-[rgb(255,137,137)] 
-    [&>span]:[background:linear-gradient(90deg,rgba(255,137,137,1)0%,rgba(255,39,39,1)35%,rgba(255,0,0,1)100%)] 
-    [&>span]:border-2 
-    [&>span]:after:border-[rgb(255,81,50)] 
-    [&>span]:after:[box-shadow:0_0_1.875rem_rgb(255,78,78),inset_0_0_1.875rem_red] 
-    [&>span]:after:border-2
-}
-
-.amber {
-    @apply 
-    !bg-amber-400
-    [&>span]:border-[rgb(255,181,39)] 
-    [&>span]:bg-[rgb(255,213,137)]
-    [&>span]:[background:linear-gradient(90deg,rgba(255,213,137,1)0%,rgba(255,189,39,1)35%,rgba(255,170,0,1)100%)]
-    [&>span]:border-2
-    [&>span]:after:border-[rgb(255,191,50)]
-    [&>span]:after:[box-shadow:0_0_1.875rem_rgb(255,178,78),inset_0_0_1.875rem_orange]
-    [&>span]:after:border-2
-}
-
-.test-parent-board {
-    height: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    flex: 999;
-}
-.test-board {
-    border: 3px solid rgb(88, 169, 255);
-    background: rgb(105,198,251);
-    background: -moz-linear-gradient(125deg, rgb(75, 189, 255) 0%, rgba(27,165,255,1) 35%, rgba(0,124,255,1) 100%);
-    background: -webkit-linear-gradient(125deg, rgb(77, 190, 255) 0%, rgba(27,165,255,1) 35%, rgba(0,124,255,1) 100%);
-    background: linear-gradient(125deg, rgb(78, 190, 255) 0%, rgba(27,165,255,1) 35%, rgba(0,124,255,1) 100%);
-    position: relative;
-    padding: 20px;
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
-}
-
-div[data-tilt] {
-  width: auto !important;
-  padding: 0 !important;
-  background-color: transparent !important;
-}
-.test-board > div {
-    border: 2px solid rgb(69, 154, 245);
-    box-shadow: inset 0 0 10px rgba(0, 21, 111, 0.5), inset 10px 0 20px rgba(0, 20, 111, 0.312);
-}
-.test-column {
-  background:         
-  linear-gradient(90deg, var(--_color, transparent) 50%, transparent 50%),    
-  linear-gradient(90deg, var(--_color, transparent) 50%, transparent 50%),    
-  linear-gradient(0deg, var(--_color, transparent) 50%, transparent 50%),    
-  linear-gradient(0deg, var(--_color, transparent) 50%, transparent 50%);
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
-  padding: 10px;
-  animation: border-dance 17s infinite linear;
-  -webkit-animation: border-dance 17s infinite linear;
-}
-.test-column:hover {
-  --_color: white;
-}
-
-@keyframes border-dance {
-  0% {
-    background-position: 0 0, 100% 100%, 0 100%, 100% 0;
-  }
-  100% {
-    background-position: 100% 0, 0 100%, 0 0, 100% 100%;
-  }
-}
-.test-row {
-    border: 5px solid rgba(27, 137, 255, 0.782);
-    border-left-color: rgba(255, 255, 255, 0.605);
-    border-top-color: rgba(255, 255, 255, 0.605);
-    box-shadow: 
-    5px 5px 10px 1px rgba(0, 55, 133, 0.642),
-    inset 0 0 20px rgba(0, 0, 0, 0.1),
-    inset 0 0 10px rgba(0, 0, 0, 0.2);
-    background-color: rgba(26, 97, 218, 0.562);
-}
-main aside {
-  /* max-width: 300px; */
-  /* flex-shrink: 500px; */
-  /* width: auto; */
-  --time: 300ms;
-  will-change: flex-basis, width;
-  transition-property: all;
-  transition-timing-function: ease-in-out;
-  transition-duration: var(--time);
-}
-
-input#aside-toggle {
-  &:not(:checked) ~ main aside {
-    flex-basis: 0%;
-  }
-
-  &:checked ~ main aside {
-    flex-basis: 500px;
-  }
-  
-  &~ main aside {
-    max-width: 375px;
+/* Base layer styles */
+@layer base {
+  body {
+    /* Set light gray background color */
+    @apply bg-[rgb(235,235,235)];
   }
 }
 
-input#aside-toggle ~ main aside > div:last-child {
-
-}
-
-input#winner-menu + main aside > div > div:last-child {
-
-}
-
-/* Winner menu */
-input#winner-menu{
-  &:not(:checked) + main aside > div > div:last-child {
-
+/* Component layer styles */
+@layer components {
+  /* Styles for winning tokens - adds white outline and glow effect */
+  .glare {
+    @apply outline outline-2 outline-white !shadow-[0_0_10px_6px_white];
   }
 
-  &:checked + main aside > div > div:last-child {
+  /* Styles for rose/red player tokens */
+  .rose {
+    @apply !bg-rose-900 
+      [&>span]:border-[rgb(255,71,39)]
+      [&>span]:border-2
+      [&>span]:bg-[rgb(255,137,137)]
+      [&>span]:[background:linear-gradient(90deg,rgba(255,137,137,1)0%,rgba(255,39,39,1)35%,rgba(255,0,0,1)100%)]
+      [&>span]:after:border-2
+      [&>span]:after:border-[rgb(255,81,50)]
+      [&>span]:after:[box-shadow:0_0_1.875rem_rgb(255,78,78),inset_0_0_1.875rem_red];
+  }
+
+  /* Styles for amber/yellow player tokens */
+  .amber {
+    @apply !bg-amber-400
+      [&>span]:border-[rgb(255,181,39)]
+      [&>span]:border-2
+      [&>span]:bg-[rgb(255,213,137)]
+      [&>span]:[background:linear-gradient(90deg,rgba(255,213,137,1)0%,rgba(255,189,39,1)35%,rgba(255,170,0,1)100%)]
+      [&>span]:after:border-2
+      [&>span]:after:border-[rgb(255,191,50)]
+      [&>span]:after:[box-shadow:0_0_1.875rem_rgb(255,178,78),inset_0_0_1.875rem_orange];
+  }
+
+  /* Reset styles for elements with data-tilt attribute */
+  div[data-tilt] {
+    @apply !w-auto !p-0 !bg-transparent;
+  }
+
+  /* Animated border effect for game columns */
+  .column {
+    background: linear-gradient(90deg, var(--_color, transparent) 50%, transparent 50%),
+                linear-gradient(90deg, var(--_color, transparent) 50%, transparent 50%),
+                linear-gradient(0deg, var(--_color, transparent) 50%, transparent 50%),
+                linear-gradient(0deg, var(--_color, transparent) 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+  }
+
+  /* Smooth transition for sidebar width changes */
+  main aside {
+    @apply will-change-[flex-basis,width] transition-all duration-300 ease-in-out;
+  }
+
+  /* Sidebar toggle states */
+  /* When sidebar is closed */
+  input#aside-toggle:not(:checked) ~ main aside {
+    @apply basis-0;
+  }
+
+  /* When sidebar is open */
+  input#aside-toggle:checked ~ main aside {
+    @apply basis-[500px];
+  }
+
+  /* Maximum width constraint for sidebar */
+  input#aside-toggle ~ main aside {
+    @apply max-w-[375px];
   }
 }
 
-.testing-bg {
-  background-color: #e5e5f7;
-  background-image: radial-gradient(#c9c9c9 .8px, #e5e5f7 .8px);
-  background-size: 10px 10px;
+/* Utility layer styles */
+@layer utilities {
+  /* Animation for the border dancing effect */
+  @keyframes border-dance {
+    0% {
+      background-position: 0 0, 100% 100%, 0 100%, 100% 0;
+    }
+    100% {
+      background-position: 100% 0, 0 100%, 0 0, 100% 100%;
+    }
+  }
 }

@@ -288,6 +288,8 @@ export default class BoardLine {
         if (player === lastPlayerWhoPutToken) {
             elementsThatMatched.push(row)
         } else {
+            diagonalPos++
+
             return [elementsThatMatched, diagonalPos]
         }
 

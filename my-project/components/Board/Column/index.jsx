@@ -1,26 +1,35 @@
 import { useState, useRef } from 'react'
-import PropTypes from 'prop-types' // Importing PropTypes for validation
+import PropTypes from 'prop-types'
 import Row from '../Row'
 
+/**
+ * Column component represents a single column in the Connect 4 game board
+ * Handles token placement, click events, and win condition checks
+ */
 const Column = ({
-    position,
-    amountRows,
-    currentPlayer,
-    switchToNextPlayer,
-    checkForWinner,
-    incrementTotalTokensPlaced,
-    playerAttribute,
-    winnerState,
-    updateColumnState,
-    columnState
+    position,          // Column position in the grid (0-based index)
+    amountRows,        // Number of rows in the column
+    currentPlayer,     // Current player object with id and color
+    switchToNextPlayer, // Function to switch turns between players
+    checkForWinner,    // Function to check if current move created a win
+    incrementTotalTokensPlaced, // Function to track total moves made
+    playerAttribute,   // Data attribute name for tracking player ownership
+    winnerState,       // Boolean indicating if game has been won
+    setColumnStates,   // Function to update column state
+    columnState        // Current state of this column (includes rowPos)
 }) => {
+    // Reference to the column DOM element for direct manipulation
     const columnRef = useRef(undefined)
-    // const [rowPos, setRowPos] = useState(amountRows - 1)
 
+    // Create array of null values representing empty row slots
     const rows = Array(amountRows).fill(null)
 
+    /**
+     * Places a token in the current column at the appropriate row position
+     * Adds player's color class and sets data attribute for ownership
+     */
     const putTokenOnBoard = () => {
-        if (columnState.rowPos < 0) return
+        if (columnState.rowPos < 0) return // Column is full
 
         const lastChild = columnRef.current.children[columnState.rowPos]
         lastChild.classList.add(`${currentPlayer.color}`)
@@ -29,23 +38,37 @@ const Column = ({
         incrementTotalTokensPlaced()
     }
 
+    /**
+     * Handles column click events
+     * Places token, switches player turn, and checks for win condition
+     */
     const handleClick = () => {
-        //If someone has won, the game has finished
-        if (winnerState)
-            return
+        if (winnerState) return // Prevent moves after game is won
+        
         putTokenOnBoard()
         switchToNextPlayer()
+        
+        if (columnState.rowPos < 1) return // No need to check win if column is now full
+        
         checkForWinner(position, columnState.rowPos)
-        // setRowPos(rowPos - 1)
-        updateColumnState(columnState.rowPos - 1)
+        setColumnStates(columnState.rowPos - 1) // Update available row position
     }
 
     return (
         <div
-            className="test-column grid gap-4 cursor-pointer"
+            className="
+                column
+                hover:[--_color:white]
+                animate-[border-dance_17s_linear_infinite]
+                grid
+                gap-4
+                cursor-pointer
+                p-[10px]
+            "
             onClick={handleClick}
             ref={columnRef}
         >
+            {/* Render empty row slots */}
             {
                 rows.map((_, i) => (
                     <Row key={`${Row.displayName}${i}`}></Row>
@@ -57,21 +80,21 @@ const Column = ({
 
 Column.displayName = 'Column'
 
-// Defining the expected prop types for validation
+// PropTypes for type checking and documentation
 Column.propTypes = {
-    position: PropTypes.number.isRequired,                  // Must be a number, required
-    amountRows: PropTypes.number.isRequired,                // Must be a number, required
-    currentPlayer: PropTypes.shape({                            // Must be an object with specific shape
-        id: PropTypes.number.isRequired,                    // Player ID should be a required number
-        color: PropTypes.string.isRequired,               // Player color should be a required string
+    position: PropTypes.number.isRequired,                  // Column index
+    amountRows: PropTypes.number.isRequired,                // Number of rows
+    currentPlayer: PropTypes.shape({                        // Current player info
+        id: PropTypes.number.isRequired,                    // Player identifier
+        color: PropTypes.string.isRequired,                 // Player token color
     }).isRequired,
-    switchToNextPlayer: PropTypes.func.isRequired,            // Must be a function, required
-    checkForWinner: PropTypes.func.isRequired,                 // Must be a function, required
-    incrementTotalTokensPlaced: PropTypes.func.isRequired, // Must be a function, required
-    playerAttribute: PropTypes.string.isRequired,            // Must be a string, required
-    winnerState: PropTypes.bool.isRequired,
-    updateColumnState: PropTypes.func.isRequired,
+    switchToNextPlayer: PropTypes.func.isRequired,          // Turn management
+    checkForWinner: PropTypes.func.isRequired,              // Win condition checker
+    incrementTotalTokensPlaced: PropTypes.func.isRequired,  // Move counter
+    playerAttribute: PropTypes.string.isRequired,           // DOM data attribute
+    winnerState: PropTypes.bool.isRequired,                 // Game win state
+    setColumnStates: PropTypes.func.isRequired,             // Column state updater
+    columnState: PropTypes.object.isRequired                // Current column state
 }
 
-// Exporting the component as default
 export default Column
