@@ -2,6 +2,8 @@
 
 A modern implementation of the classic Connect 4 game built with *React* and *Vite*, featuring a sleek design and smooth animations.
 
+🎮 [Play the game here!](https://andryalexis.github.io/Connect-4)
+
 ![Connect 4 Game](./game-screenshot.png) <!-- Consider adding a screenshot of your game -->
 
 ## Features
@@ -32,18 +34,3 @@ The game is built with several key components:
 
 1. Clone the repository
 2. Install dependencies:
-```bash
-# Using npm
-npm install
-
-# Using yarn 
-yarn install
-
-# Using pnpm
-pnpm install
-```
-3. Run the development server:
-```bash
-npm run dev
-```	
-
