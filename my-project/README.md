@@ -2,7 +2,7 @@
 
 A modern implementation of the classic Connect 4 game built with *React* and *Vite*, featuring a sleek design and smooth animations.
 
-![Connect 4 Game](game-screenshot.png) <!-- Consider adding a screenshot of your game -->
+![Connect 4 Game](./game-screenshot.png) <!-- Consider adding a screenshot of your game -->
 
 ## Features
 
