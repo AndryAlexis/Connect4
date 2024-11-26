@@ -2,7 +2,7 @@
 
 A modern implementation of the classic Connect 4 game built with *React* and *Vite*, featuring a sleek design and smooth animations.
 
-🎮 [Play the game here!](https://andryalexis.github.io/Connect-4)
+🎮 [Play the game here!](https://andryalexis.github.io/Connect4/)
 
 ![Connect 4 Game](./game-screenshot.png) <!-- Consider adding a screenshot of your game -->
 
